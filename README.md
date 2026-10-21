@@ -1,6 +1,6 @@
 # UXID 241 Cookbook 
 
-This is the repository for the UXID 241 cookbook project. All work on the project will be done here.
+This is the repository for the UXID 241 cookbook project. Through this web app, users can search through a vast catalog of recipes, and even upload their own. All work on the project will be done in this repository.
 
 # How it works! 
 
