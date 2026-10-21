@@ -2,6 +2,10 @@
 
 This is the repository for the UXID 241 cookbook project. All work on the project will be done here.
 
+# How it works! 
+
+This project is built on PHP and SQL. To run it, you must have the repository downloaded locally on your machine and search up localhost on your browser. The index.php file is what you see when you go to localhost, but all of the recipe data it displays is stored in MySQL, which is getting it's data imported from the local schema.sql file. The database.php file is responsible for establishing the connection between index.php and MySQL. 
+
 ## AI Use 
 
 DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated. 
@@ -15,3 +19,7 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 - Catch an error I was getting with my success variable, ended up being a simple typo, missing the $.
 
 - Removed code that was not doing anything. There were no full lines of code that didn't have a function, but I was able to remove the value ="" I had on lines 110 and 112 that was not doing anything, and rework a line that was written as <?php if ($recipe_name && $email !='' && $success) : ?> down to just <?php if ($success) : ?>, which worked because I had already built these parameters for success in the PHP at the top of the page. 
+
+10/20:
+
+- Figure out why I was receiving a warning of an undefined array. Ended up being an error with line 6 not calling on the database for anything other than title, description, and step 1. 
