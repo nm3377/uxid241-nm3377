@@ -22,6 +22,7 @@
     <title>UXID 241 Cookbook Assignment 3</title>
 </head>
 <body>
+    
     <h2>Available Recipes:</h2>
 
     <?php 
@@ -32,5 +33,6 @@
         <p>Step 1: <?= e($recipe['step1']); ?></p>
         <p>Step 2: <?= e($recipe['step2']); ?></p> 
     <?php endforeach; ?>
+    
 </body>
 </html>

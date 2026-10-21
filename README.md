@@ -23,3 +23,5 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 10/20:
 
 - Figure out why I was receiving a warning of an undefined array. Ended up being an error with line 6 not calling on the database for anything other than title, description, and step 1. 
+
+- Verified that all requirements according to canvas were met. They were. 
