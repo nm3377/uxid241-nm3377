@@ -18,9 +18,5 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         http_response_code(500);
         exit('Connection failed: ' . $e->getMessage());
     } //$e holds exception object
-   
-    // if($conn){
-    //     echo"You are connected!<br />"; I'll uncomment this back out if I need to test it again later on!
-    // }
 
 ?>

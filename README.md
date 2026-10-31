@@ -4,7 +4,15 @@ This is the repository for the UXID 241 cookbook project. Through this web app, 
 
 # How it works! 
 
-This project is built on PHP and SQL. To run it, you must have the repository downloaded locally on your machine and search up localhost on your browser. The index.php file is what you see when you go to localhost, but all of the recipe data it displays is stored in MySQL, which is getting it's data imported from the local schema.sql file. The database.php file is responsible for establishing the connection between index.php and MySQL. 
+This project uses PHP, MySQL, and mysqli. XAMPP or MAMP is required to run the project locally.
+
+1. Download or clone this repository and place it inside the web server's htdocs directory.
+2. Start Apache and MySQL through XAMPP or MAMP.
+3. Open phpMyAdmin through localhost.
+4. Import uxid241_cookbook.sql. The schema creates the uxid241_cookbook database, creates the recipes table, and adds the seed recipe data.
+5. Copy config.example.php to a new file named config.php.
+6. Update the database settings in config.php to match your local MySQL configuration. The application expects the database name uxid241_cookbook.
+7. When in localhost, follow the path cookbook/uxid241-nm3377 to open the project. 
 
 ## AI Use 
 
@@ -25,3 +33,7 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 - Figure out why I was receiving a warning of an undefined array. Ended up being an error with line 6 not calling on the database for anything other than title, description, and step 1. 
 
 - Verified that all requirements according to canvas were met. They were. 
+
+10/30-10/31
+
+- Refresh on how implode/explode work in order to integrate them while changing how the steps system works, information to include in config.example.php, and confirm necessary updates to the README.md file. 
