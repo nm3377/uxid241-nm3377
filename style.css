@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #232121;
+  color: #FFFFFF;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
+
+.site_header {
+  background-color: #33806A;
+  color: #000000;
+  border-bottom: 14px solid #569AA3;
+  padding: 48px 50px 65px;
+}
+
+.header_content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site_title {
+  margin: 0 0 24px;
+  font-size: 34px;
+  font-weight: 400;
+}
+
+.project_by {
+  margin: 0;
+  font-size: 20px;
+}
+
+.site_nav {
+  display: flex;
+  gap: 90px;
+}
+
+.site_nav a {
+  color: #000000;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.site_nav a:hover {
+  text-decoration: underline;
+}
+
+/* MAIN */
+
+main {
+  padding: 65px 50px;
+}
+
+/* SEARCH */
+
+.search_form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 55px;
+}
+
+.search_form label {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.search_form input {
+  width: 330px;
+  height: 40px;
+  border: none;
+  padding: 8px 12px;
+  font-size: 18px;
+}
+
+.search_form button {
+  width: 150px;
+  height: 40px;
+  border: none;
+  background-color: #A79F9F;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* RECIPES */
+
+.recipes_heading {
+  margin: 0 0 30px;
+  font-size: 34px;
+  font-weight: 400;
+}
+
+.recipe_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.recipe_card {
+  background-color: #174035;
+}
+
+.recipe_image {
+  width: 100%;
+  aspect-ratio: 1.75 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.recipe_content {
+  padding: 18px 14px 30px;
+}
+
+.recipe_content h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.recipe_content p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.no_results {
+  font-size: 18px;
+}
+
+/* ADMIN */
+
+.admin_label {
+  margin: 0;
+  padding: 8px 50px;
+  background-color: #174035;
+  font-weight: 700;
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+  .header_content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 35px;
+  }
+
+  .site_nav {
+    gap: 35px;
+  }
+
+  .search_form {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .recipe_grid {
+    grid-template-columns: 1fr;
+  }
+}

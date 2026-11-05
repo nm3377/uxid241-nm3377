@@ -37,3 +37,4 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 10/30-10/31
 
 - Refresh on how implode/explode work in order to integrate them while changing how the steps system works, information to include in config.example.php, and confirm necessary updates to the README.md file. 
+
