@@ -38,3 +38,8 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 
 - Refresh on how implode/explode work in order to integrate them while changing how the steps system works, information to include in config.example.php, and confirm necessary updates to the README.md file. 
 
+11/4
+
+- To understand how to build the login/registration function of the site. 
+
+- Help convert my Figma mockup of the visual layout into CSS 
