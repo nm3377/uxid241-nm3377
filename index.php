@@ -6,8 +6,27 @@ session_start();
 
 require 'database.php';
 
+
 function e(string $value): string {
   return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
+$is_admin = false;
+
+if (isset($_SESSION['user_id'])) {
+  $user_result = mysqli_execute_query(
+    $conn,
+    'SELECT is_admin
+     FROM users
+     WHERE id = ?',
+    [$_SESSION['user_id']]
+  );
+
+  $current_user = mysqli_fetch_assoc($user_result);
+
+  if ($current_user) {
+    $is_admin = (bool) $current_user['is_admin'];
+  }
 }
 
 $search = trim($_GET['q'] ?? '');
@@ -15,14 +34,14 @@ $search = trim($_GET['q'] ?? '');
 if ($search === '') {
   $result = mysqli_query(
     $conn,
-    'SELECT id, title, description, ingredients, steps FROM recipes'
+    'SELECT id, title, description, ingredients, steps, image FROM recipes'
   );
 } else {
   $search_term = '%' . $search . '%';
 
   $result = mysqli_execute_query(
     $conn,
-    'SELECT id, title, description, ingredients, steps
+    'SELECT id, title, description, ingredients, steps, image
      FROM recipes
      WHERE title LIKE ?
         OR description LIKE ?
@@ -30,6 +49,7 @@ if ($search === '') {
         OR steps LIKE ?',
     [$search_term, $search_term, $search_term, $search_term]
   );
+
 }
 
 $recipes = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -43,7 +63,7 @@ $recipes = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UXID 241 Cookbook</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/styles/style.css">
 </head>
 
 <body>
@@ -60,17 +80,19 @@ $recipes = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <a href="index.php">Home</a>
 
         <?php if (isset($_SESSION['user_id'])): ?>
+          <a href="manage_recipes.php">Manage Recipes</a>
           <a href="logout.php">Logout</a>
         <?php else: ?>
           <a href="login.php">Login</a>
           <a href="register.php">Register</a>
+          <a href="manage_recipes.php">Manage Recipes</a>
         <?php endif; ?>
       </nav>
 
     </div>
   </header>
 
-  <?php if ($_SESSION['is_admin'] ?? false): ?>
+  <?php if ($is_admin): ?>
     <p class="admin_label">ADMIN</p>
   <?php endif; ?>
 
@@ -104,20 +126,25 @@ $recipes = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         <?php foreach ($recipes as $recipe): ?>
 
-          <article class="recipe_card">
+          <a
+            class="recipe_card_link"
+            href="recipe.php?id=<?= (int) $recipe['id']; ?>"
+          >
+            <article class="recipe_card">
 
-            <img
-              class="recipe_image"
-              src="placeholder.jpg"
-              alt=""
-            >
+              <img
+                class="recipe_image"
+                src="<?= e($recipe['image']); ?>"
+                alt="<?= e($recipe['title']); ?>"
+              >
 
-            <div class="recipe_content">
-              <h3><?= e($recipe['title']); ?></h3>
-              <p><?= e($recipe['description']); ?></p>
-            </div>
+              <div class="recipe_content">
+                <h3><?= e($recipe['title']); ?></h3>
+                <p><?= e($recipe['description']); ?></p>
+              </div>
 
-          </article>
+            </article>
+          </a>
 
         <?php endforeach; ?>
 

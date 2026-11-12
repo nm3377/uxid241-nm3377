@@ -10,102 +10,106 @@ function e(string $value): string {
   return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-$username = '';
+$email = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = trim($_POST['username'] ?? '');
+  $email = trim($_POST['email'] ?? '');
   $password = $_POST['password'] ?? '';
 
-  $result = mysqli_execute_query(
-    $conn,
-    'SELECT id, username, password_hash, is_admin
-     FROM users
-     WHERE username = ?',
-    [$username]
-  );
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = 'Please enter a valid email address.';
+  } elseif ($password === '') {
+    $error = 'Password is required.';
+  } else {
+    $result = mysqli_execute_query(
+      $conn,
+      'SELECT id, email, password_hash, is_admin
+       FROM users
+       WHERE email = ?',
+      [$email]
+    );
 
-  $user = mysqli_fetch_assoc($result);
+    $user = mysqli_fetch_assoc($result);
 
-  if ($user && password_verify($password, $user['password_hash'])) {
+      if ($user && password_verify($password, $user['password_hash'])) {
     session_regenerate_id(true);
 
     $_SESSION['user_id'] = $user['id'];
-    $_SESSION['username'] = $user['username'];
-    $_SESSION['is_admin'] = (bool) $user['is_admin'];
 
     header('Location: index.php');
     exit;
   }
 
-  $error = 'Invalid username or password.';
+    $error = 'Invalid email or password.';
+  }
 }
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | UXID 241 Cookbook</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | UXID 241 Cookbook</title>
+    <link rel="stylesheet" href="assets/styles/style.css">
+  </head>
 
-<body>
+  <body>
 
-  <header class="site_header">
-    <div class="header_content">
+    <header class="site_header">
+      <div class="header_content">
 
-      <div>
-        <h1 class="site_title">UXID 241 COOKBOOK</h1>
-        <p class="project_by">Project by: Nick Murray</p>
+        <div>
+          <h1 class="site_title">UXID 241 COOKBOOK</h1>
+          <p class="project_by">Project by: Nick Murray</p>
+        </div>
+
+        <nav class="site_nav">
+          <a href="index.php">Home</a>
+
+          <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="logout.php">Logout</a>
+          <?php else: ?>
+            <a href="login.php">Login</a>
+            <a href="register.php">Register</a>
+          <?php endif; ?>
+        </nav>
+
       </div>
+    </header>
 
-      <nav class="site_nav">
-        <a href="index.php">Home</a>
+    <main>
+      <h1>Login</h1>
 
-        <?php if (isset($_SESSION['user_id'])): ?>
-          <a href="logout.php">Logout</a>
-        <?php else: ?>
-          <a href="login.php">Login</a>
-          <a href="register.php">Register</a>
-        <?php endif; ?>
-      </nav>
+      <?php if ($error !== ''): ?>
+        <p><?= e($error); ?></p>
+      <?php endif; ?>
 
-    </div>
-  </header>
+      <form action="login.php" method="POST">
 
-  <main>
-    <h1>Login</h1>
+        <label for="email">Email</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value="<?= e($email); ?>"
+          required
+        >
 
-    <?php if ($error !== ''): ?>
-      <p><?= e($error); ?></p>
-    <?php endif; ?>
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+        >
 
-    <form action="login.php" method="POST">
+        <button type="submit">Log In</button>
 
-      <label for="username">Username</label>
-      <input
-        type="text"
-        id="username"
-        name="username"
-        value="<?= e($username); ?>"
-        required
-      >
+      </form>
+    </main>
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        required
-      >
-
-      <button type="submit">Log In</button>
-
-    </form>
-  </main>
-
-</body>
+  </body>
 </html>

@@ -10,16 +10,16 @@ function e(string $value): string {
   return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-$username = '';
+$email = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = trim($_POST['username'] ?? '');
+  $email = trim($_POST['email'] ?? '');
   $password = $_POST['password'] ?? '';
   $confirm_password = $_POST['confirm_password'] ?? '';
 
-  if ($username === '') {
-    $error = 'Username is required.';
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = 'Please enter a valid email address.';
   } elseif ($password === '') {
     $error = 'Password is required.';
   } elseif ($password !== $confirm_password) {
@@ -27,22 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } else {
     $result = mysqli_execute_query(
       $conn,
-      'SELECT id FROM users WHERE username = ?',
-      [$username]
+      'SELECT id FROM users WHERE email = ?',
+      [$email]
     );
 
     $existing_user = mysqli_fetch_assoc($result);
 
     if ($existing_user) {
-      $error = 'That username is already taken.';
+      $error = 'That email is already in use.';
     } else {
-      $password_hash = password_hash($password, PASSWORD_DEFAULT);
+      $password_hash = password_hash(
+        $password,
+        PASSWORD_DEFAULT
+      );
 
       mysqli_execute_query(
         $conn,
-        'INSERT INTO users (username, password_hash, is_admin)
+        'INSERT INTO users (email, password_hash, is_admin)
          VALUES (?, ?, ?)',
-        [$username, $password_hash, 0]
+        [$email, $password_hash, 0]
       );
 
       header('Location: login.php');
@@ -50,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | UXID 241 Cookbook</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/styles/style.css">
 </head>
 
 <body>
@@ -96,12 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form action="register.php" method="POST">
 
-      <label for="username">Username</label>
+      <label for="email">Email</label>
       <input
         type="text"
-        id="username"
-        name="username"
-        value="<?= e($username); ?>"
+        id="email"
+        name="email"
+        value="<?= e($email); ?>"
         required
       >
 

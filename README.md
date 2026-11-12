@@ -1,18 +1,56 @@
 # UXID 241 Cookbook 
 
-This is the repository for the UXID 241 cookbook project. Through this web app, users can search through a vast catalog of recipes, and even upload their own. All work on the project will be done in this repository.
+This project is a searchable online cookbook built with PHP, MySQL, HTML, and CSS. Recipes are stored in a MySQL database and displayed as cards on the homepage, where users can search the cookbook and open individual recipes to view their full information. The project also includes an authentication system with hashed passwords and session handling. Administrators can access a protected Manage Recipes area where they can create, edit, and delete recipes.
 
-# How it works! 
+## How to Run Locally 
 
-This project uses PHP, MySQL, and mysqli. XAMPP or MAMP is required to run the project locally.
+This project requires XAMPP or MAMP with Apache and MySQL running.
 
-1. Download or clone this repository and place it inside the web server's htdocs directory.
-2. Start Apache and MySQL through XAMPP or MAMP.
-3. Open phpMyAdmin through localhost.
-4. Import uxid241_cookbook.sql. The schema creates the uxid241_cookbook database, creates the recipes table, and adds the seed recipe data.
-5. Copy config.example.php to a new file named config.php.
-6. Update the database settings in config.php to match your local MySQL configuration. The application expects the database name uxid241_cookbook.
-7. When in localhost, follow the path cookbook/uxid241-nm3377 to open the project. 
+Download or clone this repository and place the project folder inside your local web server's htdocs directory.
+
+Start Apache and MySQL through XAMPP or MAMP.
+
+Open phpMyAdmin through localhost.
+
+Import uxid241_cookbook.sql. The SQL file creates the uxid241_cookbook database, creates the required tables, and loads the seed data.
+
+Copy config.example.php and rename the copy to config.php.
+
+Update the values in config.php to match your local MySQL configuration:
+
+return [
+  'db_host' => 'localhost',
+  'db_port' => 'YOUR_PORT',
+  'db_name' => 'uxid241_cookbook',
+  'db_user' => 'YOUR_USERNAME',
+  'db_pass' => 'YOUR_PASSWORD',
+  'db_charset' => 'utf8mb4',
+];
+
+Open the project through localhost in your browser. For example, if the repository is stored at htdocs/cookbook/uxid241-nm3377, navigate to:
+
+localhost/cookbook/uxid241-nm3377/
+
+The project must be served through XAMPP or MAMP rather than opening the PHP files directly.
+
+## Admin login
+
+The cookbook includes a session-protected admin area for managing recipes. The seeded administrator account can log in using:
+
+Email: [ENTER SEEDED ADMIN EMAIL HERE]
+Password: [ENTER SEEDED ADMIN PASSWORD HERE]
+
+After logging in as an administrator, use Manage Recipes in the navigation to access the protected admin area. From there, an administrator can create, edit, and delete recipes.
+
+Passwords are not stored in plaintext in the database. The database stores password hashes generated with password_hash(), and login attempts are verified with password_verify().
+
+## Beta feature: Search
+
+The beta feature implemented for this project is Search.
+
+Use the search field on the homepage to search the cookbook. Search terms are compared against recipe content in the database, and matching recipes are displayed as recipe cards. Clicking a recipe card opens that recipe's individual page.
+
+The search query uses a prepared SQL statement with LIKE parameters so user-supplied search values are not directly interpolated into SQL.
 
 ## AI Use 
 
@@ -42,4 +80,14 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 
 - To understand how to build the login/registration function of the site. 
 
-- Help convert my Figma mockup of the visual layout into CSS 
+- Help convert my Figma mockup of the visual layout into CSS.
+
+11/11 
+
+- Flesh out the code and help understand the logic behind the new PHP files needed for CRUD requirements (manage_recipes, edit_recipe, delete_recipe, recipe).
+
+- Aid in fixing login system to require emails, not just usernames. 
+
+- Basic bugfixing/determining root cause of errors. 
+
+- Verify that all content needed for Beta review is present in the code. 
