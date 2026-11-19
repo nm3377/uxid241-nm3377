@@ -91,3 +91,7 @@ DrexelEDU ChatGPT was used for all AI assistance unless otherwise stated.
 - Basic bugfixing/determining root cause of errors. 
 
 - Verify that all content needed for Beta review is present in the code. 
+
+11/18
+
+- Aid in development of code for image upload and validation for creating new recipes in Manage Recipes and changing images in Edit Recipe. 

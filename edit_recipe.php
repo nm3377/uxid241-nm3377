@@ -12,7 +12,7 @@ $id = (int) ($_GET['id'] ?? 0);
 
 $result = mysqli_execute_query(
   $conn,
-  'SELECT id, title, description, ingredients, steps
+  'SELECT id, title, description, ingredients, steps, image
    FROM recipes
    WHERE id = ?',
   [$id]
@@ -31,6 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $description = trim($_POST['description'] ?? '');
   $ingredients = trim($_POST['ingredients'] ?? '');
   $steps = trim($_POST['steps'] ?? '');
+  $image_path = $recipe['image'];
+
+  $new_image_uploaded =
+  isset($_FILES['image']) &&
+  $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE;
 
   if ($title === '') {
     $errors[] = 'Title is required.';
@@ -48,16 +53,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors[] = 'Steps are required.';
   }
 
+  if ($new_image_uploaded) {
+
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+      $errors[] = 'The image could not be uploaded.';
+    } else {
+      $tmp_name = $_FILES['image']['tmp_name'];
+
+      $max_file_size = 5 * 1024 * 1024;
+
+      if ($_FILES['image']['size'] > $max_file_size) {
+        $errors[] = 'Image must be 5 MB or smaller.';
+      }
+
+      $finfo = new finfo(FILEINFO_MIME_TYPE);
+      $mime_type = $finfo->file($tmp_name);
+
+      $allowed_types = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+      ];
+
+      if (!isset($allowed_types[$mime_type])) {
+        $errors[] = 'Image must be a JPEG or PNG file.';
+      }
+
+      if (getimagesize($tmp_name) === false) {
+        $errors[] = 'Uploaded file is not a valid image.';
+      }
+    }
+  }
+
+  if (empty($errors) && $new_image_uploaded) {
+    $extension = $allowed_types[$mime_type];
+    $filename = bin2hex(random_bytes(16)) . '.' . $extension;
+
+    $upload_directory = __DIR__ . '/assets/uploads/';
+    $destination = $upload_directory . $filename;
+
+    if (move_uploaded_file($tmp_name, $destination)) {
+      $image_path = 'assets/uploads/' . $filename;
+    } else {
+      $errors[] = 'Image could not be saved.';
+    }
+  }
+
   if (empty($errors)) {
     mysqli_execute_query(
       $conn,
       'UPDATE recipes
-       SET title = ?,
-           description = ?,
-           ingredients = ?,
-           steps = ?
-       WHERE id = ?',
-      [$title, $description, $ingredients, $steps, $id]
+      SET title = ?,
+          description = ?,
+          ingredients = ?,
+          steps = ?,
+          image = ?
+      WHERE id = ?',
+      [
+        $title,
+        $description,
+        $ingredients,
+        $steps,
+        $image_path,
+        $id
+      ]
     );
 
     header('Location: manage_recipes.php');
@@ -114,7 +172,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form
       action="edit_recipe.php?id=<?= (int) $recipe['id']; ?>"
       method="POST"
-    >
+      enctype="multipart/form-data"
+    >    
 
       <label for="title">Title</label>
       <input
@@ -146,6 +205,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         name="steps"
         required
       ><?= e($recipe['steps']); ?></textarea>
+
+      <label>Current Image</label>
+
+      <img
+        class="edit_recipe_image"
+        src="<?= e($recipe['image']); ?>"
+        alt="<?= e($recipe['title']); ?>"
+      >
+
+      <label for="image">Replace Image</label>
+
+      <input
+        type="file"
+        id="image"
+        name="image"
+        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+      >      
 
       <button type="submit">Save Changes</button>
 
