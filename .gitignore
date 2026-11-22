@@ -57,3 +57,4 @@ presentations/images
 tests/answer_key
 z-archive
 config.php
+config_production.php
